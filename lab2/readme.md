@@ -319,7 +319,7 @@ plt.plot([1, 7, 3, 5, 11, 1])
 ```
 ![alt text](<pics/Lesson 2.png/2026-03-15_19-35-41.png>)
 
-##### 2.1.1
+###### 2.1.1
 
 Для того, чтобы задать значения по осям x и y необходимо в plot()
 передать два списка:
@@ -570,4 +570,434 @@ axs[1, 1].plot(x, y4, ':')
 В результате получим следующий график:
 
 ![alt text](<pics/Lesson 2.png/2026-03-15_19-41-12.png>)
+
+
+#### Урок 3: Отображение легенды
+
+##### 3.1
+
+Для отображения легенды на графике используется функция legend().
+Возможны следующие варианты ее вызова:
+
+legend()
+legend(labels)
+legend(handles, labels)
+
+В первом варианте, в качестве меток для легенды, будут использоваться
+метки, указанные в функциях построения графиков (параметр label):
+
+```python
+x = [1, 5, 10, 15, 20]
+y1 = [1, 7, 3, 5, 11]
+y2 = [4, 3, 1, 8, 12]
+plt.plot(x, y1, 'o-r', label='line 1')
+plt.plot(x, y2, 'o-.g', label='line 1')
+plt.legend()
+```
+
+В результате получим следующий график:
+
+![alt text](image.png)
+
+Второй вариант позволяет самостоятельно указать текстовую метку для
+отображаемых данных:
+
+```python
+plt.plot(x, y1, 'o-r')
+plt.plot(x, y2, 'o-.g')
+plt.legend(['L1', 'L2'])
+```
+
+В третьем варианте можно вручную указать соответствие линий и меток:
+
+```python
+line1, = plt.plot(x, y1, 'o-b')
+line2, = plt.plot(x, y2, 'o-.m')
+plt.legend((line2, line1), ['L2', 'L1'])
+```
+
+###### 3.1.1
+
+Место расположения легенды определяется параметром loc, которой
+может принимать одно из значений, указанных в таблице 3.1.
+Таблица 3.1 — Параметры расположения легенды на графике
+Строковое описание          Код
+'best'                      0
+'upper right'               1
+'upper left'                2
+'lower left'                3
+'lower right'               4
+'right'                     5
+'center left'               6
+'center right'              7
+'lower center'              8
+'upper center'              9
+'center'                    10
+
+Ниже представлен пример, демонстрирующий различные варианты
+расстановки легенды через параметр loc:
+
+```python
+locs = ['best', 'upper right', 'upper left', 'lower left',
+        'lower right', 'right', 'center left', 'center right',
+        'lower center', 'upper center', 'center']
+plt.figure(figsize=(12, 12))
+for i in range(3):
+  for j in range(4):
+    if i*4+j < 11:
+      plt.subplot(3, 4, i*4+j+1)
+      plt.title(locs[i*4+j])
+      plt.plot(x, y1, 'o-r', label='line 1')
+      plt.plot(x, y2, 'o-.g', label='line 2')
+      plt.legend(loc=locs[i*4+j])
+    else:
+      break
+```
+
+В результате получим следующий график:
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-42-53.png>)
+
+###### 3.1.2
+
+В таблице 3.2 представлены дополнительные параметры, которые
+можно использовать для более тонкой настройки легенды.
+
+![alt text](<pics/Книга [1]/2026-03-16_09-20.png>)
+![alt text](<pics/Книга [1]/2026-03-16_09-21.png>)
+
+Пример работы с параметрами:
+
+```py
+plt.plot(x, y1, 'o-r', label='line 1')
+plt.plot(x, y2, 'o-.g', label='line 1')
+plt.legend(fontsize=14, shadow=True, framealpha=1, facecolor='y',
+edgecolor='r', title='Легенда')
+```
+
+В результате получим следующий график:
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-43-24.png>)
+
+##### 3.2: Инструмент GridSpec
+
+Класс GridSpec, позволяет задавать геометрию сетки и расположение на
+ней полей с графиками. На первый взгляд может показаться, что работа
+с GridSpec довольно неудобна и требует написания лишнего кода, но,
+если требуется расположить поля с графиками нетривиальным образом,
+то этот инструмент становится незаменимым. Перед тем как работать с
+GridSpec импортируйте его:
+```py
+import matplotlib.gridspec as gridspec
+```
+Для начала решим простую задачу отображения двух полей с графиками
+с использованием GridSpec:
+
+```py
+x = [1, 2, 3, 4, 5]
+y1 = [9, 4, 2, 4, 9]
+y2 = [1, 7, 6, 3, 5]
+fg = plt.figure(figsize=(7, 3), constrained_layout=True)
+gs = gridspec.GridSpec(ncols=2, nrows=1, figure=fg)
+fig_ax_1 = fg.add_subplot(gs[0, 0])
+plt.plot(x, y1)
+fig_ax_2 = fg.add_subplot(gs[0, 1])
+plt.plot(x, y2)
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-43-51.png>)
+
+###### 3.2.1
+
+ Объект класса GridSpec, создается в строке:
+```py
+gridspec.GridSpec(ncols=2, nrows=1, figure=fg)
+```
+В конструктор класса передается количество столбцов, строк и Фигура,
+на которой все будет отображено.
+Альтернативный вариант создания объекта GridSpec выглядит так:
+```py
+gs = fg.add_gridspec(1, 2)
+```
+Здесь fg - это объект Figure, у которого есть метод add_gridspec(),
+позволяющий добавить на него сетку с заданными параметрами (в
+нашем случае одна строка и два столбца).
+При задании элементов сетки, на которых будет расположено поле с
+графиком, GridSpec позволяет использовать синтаксис подобный тому,
+что применяется для построения слайсов в Numpy.
+Добавим еще один набор данных к уже существующему:
+
+```py
+x = [1, 2, 3, 4, 5]
+y1 = [9, 4, 2, 4, 9]
+y2 = [1, 7, 6, 3, 5]
+y3 = [-7, -4, 2, -4, -7]
+
+#Построим графики в новой компоновке:
+fg = plt.figure(figsize=(9, 4), constrained_layout=True)
+gs = fg.add_gridspec(2, 2)
+fig_ax_1 = fg.add_subplot(gs[0, :])
+plt.plot(x, y2)
+fig_ax_2 = fg.add_subplot(gs[1, 0])
+plt.plot(x, y1)
+fig_ax_3 = fg.add_subplot(gs[1, 1])
+plt.plot(x, y3)
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-44-08.png>)
+
+###### 3.2.2
+
+Ниже представлен еще один пример, без данных (с пустыми полями),
+который иллюстрирует возможности GridSpec:
+
+```py
+fg = plt.figure(figsize=(9, 9), constrained_layout=True)
+gs = fg.add_gridspec(5, 5)
+fig_ax_1 = fg.add_subplot(gs[0, :3])
+fig_ax_1.set_title('gs[0, :3]')
+fig_ax_2 = fg.add_subplot(gs[0, 3:])
+fig_ax_2.set_title('gs[0, 3:]')
+fig_ax_3 = fg.add_subplot(gs[1:, 0])
+fig_ax_3.set_title('gs[1:, 0]')
+fig_ax_4 = fg.add_subplot(gs[1:, 1])
+fig_ax_4.set_title('gs[1:, 1]')
+fig_ax_5 = fg.add_subplot(gs[1, 2:])
+fig_ax_5.set_title('gs[1, 2:]')
+fig_ax_6 = fg.add_subplot(gs[2:4, 2])
+fig_ax_6.set_title('gs[2:4, 2]')
+fig_ax_7 = fg.add_subplot(gs[2:4, 3:])
+fig_ax_7.set_title('gs[2:4, 3:]')
+fig_ax_8 = fg.add_subplot(gs[4, 3:])
+fig_ax_8.set_title('gs[4, 3:]')
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-44-26.png>)
+
+###### 3.2.3
+
+Можно заранее задать размеры областей и передать их в качестве
+параметров в виде массивов:
+
+```py
+fg = plt.figure(figsize=(5, 5),constrained_layout=True)
+widths = [1, 3]
+heights = [2, 0.7]
+gs = fg.add_gridspec(ncols=2, nrows=2, width_ratios=widths,
+height_ratios=heights)
+fig_ax_1 = fg.add_subplot(gs[0, 0])
+fig_ax_1.set_title('w:1, h:2')
+fig_ax_2 = fg.add_subplot(gs[0, 1])
+fig_ax_2.set_title('w:3, h:2')
+fig_ax_3 = fg.add_subplot(gs[1, 0])
+fig_ax_3.set_title('w:1, h:0.7')
+fig_ax_4 = fg.add_subplot(gs[1, 1])
+fig_ax_4.set_title('w:3, h:0.7')
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-44-39.png>)
+
+##### 3.3: Текстовые элементы графика
+
+###### 3.3.1
+
+В части текстового наполнения при построении графика выделяют
+следующие составляющие:
+• заголовок поля (title);
+• заголовок фигуры (suptitle);
+• подписи осей (xlabel, ylabel);
+• тестовый блок на поле графика (text), либо на фигуре (figtext);
+• аннотация (annotate) - текст и указатель.
+У каждого элемента, который содержит текст, помимо специфических
+параметров, отвечающих за его настройку, есть параметры класса Text,
+которые открывают доступ к большому числу настроек внешнего вида и
+расположения текстового элемента. Более подробно описание
+параметров, доступных из класса Text, будет дано в “3.4 Свойства
+класса Text”. Ниже представлен код, отображающий все указанные
+выше текстовые элементы:
+
+```py
+plt.figure(figsize=(10,4))
+plt.figtext(0.5, -0.1, 'figtext')
+plt.suptitle('suptitle')
+plt.subplot(121)
+plt.title('title')
+plt.xlabel('xlabel')
+plt.ylabel('ylabel')
+plt.text(0.2, 0.2, 'text')
+plt.annotate('annotate', xy=(0.2, 0.4), xytext=(0.6, 0.7),
+arrowprops=dict(facecolor='black', shrink=0.05))
+plt.subplot(122)
+plt.title('title')
+plt.xlabel('xlabel')
+plt.ylabel('ylabel')
+plt.text(0.5, 0.5, 'text')
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-44-55.png>)
+
+###### 3.3.2
+
+Начнем с заголовка поля графика. Текст заголовка поля,
+устанавливается с помощью функции title(), которая имеет
+следующие основные аргументы:
+• label: str
+◦ Текст заголовка.
+• fontdict: dict
+◦ Словарь для управления отображением надписи, содержит
+следующие ключи:
+▪ 'fontsize': размер шрифта;
+▪ 'fontweight': начертание;
+▪ 'verticalalignment': вертикальное выравнивание;
+▪ 'horizontalalignment': горизонтальное выравнивание.
+• loc: {'center', 'left', 'right'}, str, optional
+◦ Горизонтальное выравнивание.
+• pad: float
+◦ Зазор между заголовком и верхней частью поля графика.
+Функция title() также поддерживает в качестве аргументов свойства
+класса Text:
+
+```py
+weight=['light', 'regular', 'bold']
+plt.figure(figsize=(12, 4))
+for i, lc in enumerate(['left', 'center', 'right']):
+ plt.subplot(1, 3, i+1)
+ plt.title(label=lc, loc=lc, fontsize=12+i*5, fontweight=weight[i],
+pad=10+i*15)
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-45-07.png>)
+
+###### 3.3.3
+
+При работе с pyplot, для установки подписей осей графика
+используются функции labelx() и labely(), при работе с объектом
+Axes - функции set_xlabel() и set_ylabel().
+Основные аргументы функций почти полностью совпадают с теми, что
+были описаны для функции title():
+• label: str
+◦ Текст подписи.
+• fontdict: dict
+◦ Словарь для управления отображением надписи, содержит
+следующие ключи:
+▪ 'fontsize': размер шрифта;
+▪ 'fontweight': начертание;
+▪ 'verticalalignment': вертикальное выравнивание;
+▪ 'horizontalalignment': горизонтальное выравнивание.
+• labelpad: float
+◦ Зазор между подписью и осью.
+
+В самом простом случае достаточно передать только подпись в виде
+строки:
+
+```py
+# Пример 1
+x = [i for i in range(10)]
+y = [i*2 for i in range(10)]
+plt.plot(x, y)
+plt.xlabel('Ось X')
+plt.ylabel('Ось Y')
+```
+
+Используем некоторые из дополнительных свойств для настройки
+внешнего вида подписей осей:
+```py
+# Пример 2
+plt.plot(x, y)
+plt.xlabel('Ось X\nНезависимая величина', fontsize=14, fontweight='bold')
+plt.ylabel('Ось Y\nЗависимая величина', fontsize=14, fontweight='bold')
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-45-26.png>)
+
+###### 3.3.4
+
+За установку текстовых блоков на поле графика отвечает функция
+text(). Через основные параметры этой функции можно задать
+расположение, содержание и настройки шрифта:
+• x: float
+◦ Значение координаты x надписи.
+• y: float
+◦ Значение координаты y надписи.
+• s: str
+◦ Текст надписи.
+
+В простейшем варианте использование text() будет выглядеть так:
+
+```py
+# Пример 1
+plt.text(0, 7, 'HELLO!', fontsize=15)
+plt.plot(range(0,10), range(0,10))
+```
+
+Используем свойства класса Text для модификации этого
+представления:
+
+```py
+# Пример 2
+bbox_properties=dict(boxstyle='darrow, pad=0.3', ec='k', fc='y', ls='-',
+lw=3)
+plt.text(2, 7, 'HELLO!', fontsize=15, bbox=bbox_properties)
+plt.plot(range(0,10), range(0,10))
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-47-02.png>)
+
+###### 3.3.5
+
+Инструмент Аннотация позволяет установить текстовый блок с заданным
+содержанием и стрелкой для указания на конкретное место на графике.
+Для создания аннотации используется функция annotate(), основными
+ее аргументами являются:
+• text: str
+◦ Текст аннотации.
+• xy: (float, float)
+◦ Координаты места, на которое будет указывать стрелка.
+• xytext: (float, float), optional
+◦ Координаты расположения текстовой надписи.
+• xycoords: str
+◦ Система координат, в которой определяется расположение
+указателя.
+• textcoords: str
+◦ Система координат, в которой определяется расположение
+текстового блока.
+• arrowprops: dict, optional
+◦ Параметры отображения стрелки. Имена этих параметров
+(ключи словаря) являются параметрами конструктора объекта
+класса FancyArrowPatch.
+
+Ниже представлен пример кода, который демонстрирует простой
+вариант использования annotation():
+
+```py
+import math
+x = list(range(-5, 6))
+y = [i**2 for i in x]
+plt.annotate('min', xy=(0, 0), xycoords='data', xytext=(0, 10),
+textcoords='data', arrowprops=dict(facecolor='g'))
+plt.plot(x, y)
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-47-50.png>)
+
+###### 3.3.6
+
+Рассмотрим настройку внешнего вида стрелки аннотации. За
+конфигурирование отображения стрелки отвечает параметр arrowprops,
+который принимает в качестве значения словарь, ключами которого
+являются параметры конструктора класса FancyArrowPatch, из них
+выделим два: arrowstyle отвечает за стиль стрелки и connectionstyle
+- отвечает за стиль соединительной линии.
+
+**Стиль стрелки**
+Параметр: arrowstyle
+Тип: str, ArrowStyle, optional
+Доступные стили стрелок представлены в таблице 3.4 и на рисунке 3.18.
+
+![alt text](<pics/Книга [1]/2026-03-16_09-41_2.png>)
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-48-04.png>)
+
+##### 3.4
+
 
