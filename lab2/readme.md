@@ -799,8 +799,6 @@ fig_ax_4.set_title('w:3, h:0.7')
 
 ##### 3.3: Текстовые элементы графика
 
-###### 3.3.1
-
 В части текстового наполнения при построении графика выделяют
 следующие составляющие:
 • заголовок поля (title);
@@ -836,7 +834,7 @@ plt.text(0.5, 0.5, 'text')
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-44-55.png>)
 
-###### 3.3.2
+###### 3.3.1
 
 Начнем с заголовка поля графика. Текст заголовка поля,
 устанавливается с помощью функции title(), которая имеет
@@ -868,7 +866,7 @@ pad=10+i*15)
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-45-07.png>)
 
-###### 3.3.3
+###### 3.3.2
 
 При работе с pyplot, для установки подписей осей графика
 используются функции labelx() и labely(), при работе с объектом
@@ -910,7 +908,7 @@ plt.ylabel('Ось Y\nЗависимая величина', fontsize=14, fontwei
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-45-26.png>)
 
-###### 3.3.4
+###### 3.3.3
 
 За установку текстовых блоков на поле графика отвечает функция
 text(). Через основные параметры этой функции можно задать
@@ -943,7 +941,7 @@ plt.plot(range(0,10), range(0,10))
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-47-02.png>)
 
-###### 3.3.5
+###### 3.3.4
 
 Инструмент Аннотация позволяет установить текстовый блок с заданным
 содержанием и стрелкой для указания на конкретное место на графике.
@@ -980,7 +978,7 @@ plt.plot(x, y)
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-47-50.png>)
 
-###### 3.3.6
+###### 3.3.5
 
 Рассмотрим настройку внешнего вида стрелки аннотации. За
 конфигурирование отображения стрелки отвечает параметр arrowprops,
@@ -998,6 +996,299 @@ plt.plot(x, y)
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-48-04.png>)
 
-##### 3.4
+###### 3.3.6
 
+Стиль соединительной линии
+
+Параметр: connectionstyle
+Тип: str, ConnectionStyle, None, optional
+Через данный параметр можно задать описание стиля линии, которая
+соединяет точки (xy, xycoords). В качестве значения данный параметр
+может принимать объект класса ConnectionStyle, или строку, в которой
+указывается стиль линии соединения с параметрами, перечисленными
+через запятую.
+
+![alt text](<pics/Книга [1]/2026-03-19_16-57-55.png>)
+
+Ниже представлен пример, который демонстрирует возможности работы
+с параметром connectionstyle:
+
+```py
+import math
+
+fig, axs = plt.subplots(2, 3, figsize=(12, 7))
+conn_style=[
+  'angle,angleA=90,angleB=0,rad=0.0',
+  'angle3,angleA=90,angleB=0',
+  'arc,angleA=0,angleB=0,armA=0,armB=40,rad=0.0',
+  'arc3,rad=-1.0',
+  'bar,armA=0.0,armB=0.0,fraction=0.1,angle=70',
+  'bar,fraction=-0.5,angle=180',
+]
+for i in range(2):
+  for j in range(3):
+    axs[i, j].text(0.1, 0.5, '\n'.join(conn_style[i*3+j].split(',')))
+    axs[i, j].annotate('text', xy=(0.2, 0.2), xycoords='data',
+      xytext=(0.7, 0.8), textcoords='data',
+      arrowprops=dict(arrowstyle='->',
+connectionstyle=conn_style[i*3+j]))
+```
+![alt text](<pics/Lesson 3.png/2026-03-15_19-48-23.png>)
+
+##### 3.4: Свойства класса Text
+
+Параметры, отвечающие за отображения текста
+• alpha: float
+◦ Уровень прозрачности надписи. Параметр задается числом в
+диапазоне от 0 до 1. 0 - полная прозрачность, 1 - полная
+непрозрачность.
+• color: color
+◦ Цвет текста. Значение параметра имеет тоже тип, что и
+параметр функции plot, отвечающий за цвет графика.
+• fontfamily (или family): str
+◦ Шрифт текста, задается в виде строки из набора: {'serif',
+'sans-serif', 'cursive', 'fantasy', 'monospace'}. Можно
+использовать свой шрифт.
+• fontsize (или size): str, int
+◦ Размер шрифта, можно выбрать из ряда: {'xx-small', 'xsmall', 'small', 'medium', 'large', 'x-large', 'xxlarge'}, либо задать в виде численного значения.
+• fontstyle (или style): str
+◦ Стиль шрифта, задается из набора: {'normal', 'italic',
+'oblique'}.
+• fontvariant (или variant): str
+◦ Начертание шрифта, задается из набора: {'normal', 'smallcaps'}.
+• fontweight (или weight): str
+◦ Насыщенность шрифта, задается из набора: {'ultralight',
+'light', 'normal', 'regular', 'book', 'medium',
+'roman', 'semibold', 'demibold', 'demi', 'bold',
+'heavy', 'extra bold', 'black'} либо численным значением
+в диапазоне 0-1000.
+
+Рассмотрим пример, демонстрирующий использование перечисленных
+выше параметров:
+
+```py
+plt.title('Title', alpha=0.5, color='r', fontsize=18, fontstyle='italic',
+fontweight='bold', linespacing=10)
+plt.plot(range(0,10), range(0,10))
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-48-40.png>)
+
+###### 3.4.1
+
+Для группового задания свойств можно использовать параметр
+fontproperties или font_properties, которому в качестве значения
+передается объект класса font_manager.FontProperties. Конструктор
+класса FontProperties выглядит так:
+```py
+FontProperties(family=None, style=None, variant=None, weight=None,
+stretch=None, size=None, fname=None)
+```
+• family
+◦ Имя шрифта.
+• style
+◦ Стиль шрифта.
+• variant
+◦ Начертание.
+• stretch
+◦ Ширина шрифта.
+• weight
+◦ Насыщенность шрифта.
+• size
+◦ Размер шрифта.
+Типы параметров конструктора такие же как у параметров, отвечающих
+за отображение шрифта. Не забудьте предварительно импортировать
+FontProperties прежде, чем его использовать:
+```py
+from matplotlib.font_manager import FontProperties
+plt.title('Title', fontproperties=FontProperties(family='monospace',
+style='italic', weight='heavy', size=15))
+plt.plot(range(0,10), range(0,10))
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-48-53.png>)
+
+###### 3.4.2
+
+Параметры, отвечающие за расположение надписи
+
+Для надписи можно задать выравнивание, позицию, вращение и zпорядок:
+• horizontalalignment (или ha): str
+◦ Горизонтальное выравнивание. Задается из набора: {'center',
+'right', 'left'}.
+• verticalalignment (или va): str
+◦ Вертикальное выравнивание. Задается из набора {'center',
+'top', 'bottom', 'baseline', 'center_baseline'}.
+• position: (float, float)
+◦ Позиция надписи. Определяется двумя координатами x и y,
+которые передаются в параметр position в виде кортежа из
+двух элементов.
+• rotation: float или str
+◦ Вращение. Ориентацию надписи можно задать в виде текста
+{'vertical', 'horizontal'} либо численно - значением в
+градусах.
+• rotation_mode: str
+◦ Режим вращения. Данный параметр определяет очередность
+вращения и выравнивания. Если он равен 'default', то
+вначале производится вращение, а потом выравнивание. Если
+равен 'anchor', то наоборот.
+• zorder: float
+◦ Порядок расположения. Значение параметра определяет
+очередность вывода элементов. Элемент с минимальным
+значением zorder выводится первым.
+
+Рассмотрим на примере заголовка использование параметров задания
+расположения:
+```py
+plt.title('Title', fontsize=17, position=(0.7, 0.2), rotation='vertical')
+plt.plot(range(0,10), range(0,10))
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-49-09.png>)
+
+###### 3.4.3
+
+• backgroundcolor: color
+◦ Цвет заднего фона.
+
+Если требуется более тонкая настройка с указанием цвета, толщины,
+типа рамки, цвета основной заливки и т.п., то используйте параметр
+bbox, его значение - это словарь, ключами которого являются свойства
+класса patches.FancyBboxPatch (см. таблицу 3.5).
+
+![alt text](<pics/Книга [1]/2026-03-19_17-09-44.png>)
+![alt text](<pics/Книга [1]/2026-03-19_17-10-07.png>)
+
+![alt text](<pics/Книга [1]/2026-03-19_17-10-47.png>)
+![alt text](<pics/Книга [1]/2026-03-19_17-10-58.png>)
+
+Пример оформления заднего фона надписи:
+
+```py
+from matplotlib.patches import FancyBboxPatch
+bbox_properties=dict(
+  boxstyle='rarrow, pad=0.3',
+  ec='g',
+  fc='r',
+  ls='-',
+  lw=3
+)
+plt.title('Title', fontsize=17, bbox=bbox_properties, position=(0.5,
+0.85))
+plt.plot(range(0,10), range(0,10))
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-49-20.png>)
+
+##### 3.5: Цветовая полоса — Colorbar
+
+Если вы строите цветовое распределение с использованием
+colormesh(), pcolor(), imshow() и т.п., то для отображения
+соответствия цвета и численного значения вам может понадобится
+аналог легенды, который в Matplotlib называется colorbar. Создадим
+случайное распределение с помощью np.random.rand():
+
+```py
+import numpy as np
+np.random.seed(123)
+vals = np.random.randint(10, size=(7, 7))
+plt.pcolor(vals)
+```
+
+Для данного набора построим colorbar с помощью соответствующей
+функции:
+
+```py
+np.random.seed(123)
+vals = np.random.randint(10, size=(7, 7))
+plt.pcolor(vals)
+plt.colorbar()
+```
+
+Для дискретного разделения цветов на цветовой полосе, нужно при
+построении изображения в соответствующую функцию (в нашем случае
+pcolor()) через параметр cmap передать требуемую цветовую схему:
+
+```py
+np.random.seed(123)
+vals = np.random.randint(10, size=(7, 7))
+plt.pcolor(vals, cmap=plt.get_cmap('viridis', 11) )
+plt.colorbar()
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-49-33.png>)
+
+###### 3.5.1
+
+Одни из вариантов более тонкой настройки цветовой полосы - это
+создать на базе родительского Axes элемента свой и модифицировать
+часть его параметров. Удобно сделать это с помощью функции
+inset_axes() из mpl_toolkits.axes_grid1.inset_locator. Основные
+ее аргументы перечислены в таблице 3.7.
+
+![alt text](<pics/Книга [1]/2026-03-19_17-14-54.png>)
+![alt text](<pics/Книга [1]/2026-03-19_17-15-06.png>)
+
+Продемонстрируем работу с inset_axes() на примере:
+
+```py
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+np.random.seed(123)
+vals = np.random.randint(11, size=(7, 7))
+fig, ax = plt.subplots()
+gr = ax.pcolor(vals)
+axins = inset_axes(ax, width="7%", height="50%", loc='lower left',
+bbox_to_anchor=(1.05, 0., 1, 1), bbox_transform=ax.transAxes,
+borderpad=0)
+plt.colorbar(gr, cax=axins)
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-50-41.png>)
+
+###### 3.5.2
+
+Для задания собственной шкалы необходимо передать соответствующий
+список в функцию colorbar() через параметр ticks. Надпись на шкале,
+устанавливается с помощью параметра label функции colorbar().
+Модифицируйте последнюю строку из предыдущего примера
+следующим образом:
+
+```py
+plt.colorbar(gr, cax=axins, ticks=[0, 5, 10], label='Value')
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-52-41.png>)
+
+###### 3.5.3
+
+Если есть необходимость в установке текстовых надписей, то
+воспользуйтесь функцией set_yticklabels():
+
+```py
+cbar = plt.colorbar(gr, cax=axins, ticks=[0, 5, 10], label='Value')
+cbar.ax.set_yticklabels(['Low', 'Medium', 'High'])
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-53-31.png>)
+
+###### 3.5.4
+
+Дополнительные параметры настройки colorbar
+Рассмотрим ряд параметров для настройки внешнего вида colorbar,
+которые доступны как аргументы соответствующей функции colorbar().
+
+![alt text](<pics/Книга [1]/2026-03-19_17-18-08.png>)
+
+```py
+import numpy as np
+
+np.random.seed(123)
+vals = np.random.randint(10, size=(7, 7))
+plt.pcolor(vals, cmap=plt.get_cmap('viridis', 11))
+plt.colorbar(orientation='horizontal',
+  shrink=0.9, extend='max', extendfrac=0.2,
+  extendrect=False, drawe
+```
+
+![alt text](<pics/Lesson 3.png/2026-03-15_19-53-54.png>)
 
