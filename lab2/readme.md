@@ -1292,3 +1292,6 @@ plt.colorbar(orientation='horizontal',
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-53-54.png>)
 
+### Неразрывная функция 1 варианта, график этой функции и касательную к ней.
+
+![alt text](pics/main.png/graph_variant.png)
