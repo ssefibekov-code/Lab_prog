@@ -1288,7 +1288,7 @@ plt.pcolor(vals, cmap=plt.get_cmap('viridis', 11))
 plt.colorbar(orientation='horizontal',
   shrink=0.9, extend='max', extendfrac=0.2,
   extendrect=False, drawe
-```
+``` 
 
 ![alt text](<pics/Lesson 3.png/2026-03-15_19-53-54.png>)
 
