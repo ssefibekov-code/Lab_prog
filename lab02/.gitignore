@@ -1,0 +1,20 @@
+# Виртуальное окружение
+.venv/
+env/
+venv/
+ENV/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Графики (опционально)
+# images/*.png
