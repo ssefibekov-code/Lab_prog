@@ -36,7 +36,7 @@ lab07_well_done/
 ├── gui.py                           # GUI интерфейс (tkinter)
 ├── web_simple.py                    # Веб-приложение (FastAPI)
 ├── requirements.txt                 # Зависимости проекта
-└── README.md                        # Отчёт
+└── readme.md                        # Отчёт
 ```
 
 ---
