@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 30px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .tab-btn.active { background: white; color: #667eea; }
+        .tab-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            display: none;
+        }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .result { margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 8px; }
+        .result pre { background: #fff; padding: 12px; border-radius: 6px; overflow-x: auto; }
+        .error { color: #dc3545; background: #f8d7da; border-left: 4px solid #dc3545; }
+        hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Лабораторная работа №7 - Пакеты и модули</h1>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab1">🔄 Рекурсия (ЛР4)</button>
+            <button class="tab-btn" data-tab="tab2">🔢 Замыкания (ЛР5)</button>
+            <button class="tab-btn" data-tab="tab3">🌀 Генераторы (ЛР6)</button>
+        </div>
+        
+        <div id="tab1" class="tab-content active">
+            <h2>Линеаризация списков</h2>
+            <div class="form-group">
+                <label>Вложенный список:</label>
+                <input type="text" id="linearize-data" value="[1,2,[3,4,[5,6]]]">
+            </div>
+            <button onclick="linearize()">Линеаризовать</button>
+            <div id="linearize-result" class="result"></div>
+            <hr>
+            <h2>Рекуррентная последовательность a_k</h2>
+            <div class="form-group">
+                <label>Количество членов (n):</label>
+                <input type="number" id="seq-n" value="10">
+            </div>
+            <button onclick="getSequence()">Вычислить</button>
+            <div id="seq-result" class="result"></div>
+        </div>
+        
+        <div id="tab2" class="tab-content">
+            <h2>Калькулятор с накоплением</h2>
+            <div class="form-group">
+                <label>Операция:</label>
+                <select id="calc-op">
+                    <option value="+">+ (сложение)</option>
+                    <option value="-">- (вычитание)</option>
+                    <option value="*">* (умножение)</option>
+                    <option value="/">/ (деление)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Начальное значение:</label>
+                <input type="number" id="calc-initial" value="0" step="any">
+            </div>
+            <div class="form-group">
+                <label>Значения (через запятую):</label>
+                <input type="text" id="calc-values" value="5,3,2,4">
+            </div>
+            <button onclick="calculate()">Вычислить</button>
+            <div id="calc-result" class="result"></div>
+        </div>
+        
+        <div id="tab3" class="tab-content">
+            <h2>Спиральный обход матрицы от центра</h2>
+            <div class="form-group">
+                <label>Размер матрицы (нечётный):</label>
+                <select id="spiral-size">
+                    <option value="3">3x3</option>
+                    <option value="5" selected>5x5</option>
+                    <option value="7">7x7</option>
+                </select>
+            </div>
+            <button onclick="spiral()">Обойти</button>
+            <div id="spiral-result" class="result"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function linearize() {
+            const data = document.getElementById('linearize-data').value;
+            const resultDiv = document.getElementById('linearize-result');
+            resultDiv.innerHTML = 'Загрузка...';
+            try {
+                const response = await fetch('/api/linearize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: data, method: 'recursive' })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    resultDiv.innerHTML = `<strong>Результат:</strong><pre>${JSON.stringify(result.result, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Ошибка: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        async function getSequence() {
+            const n = document.getElementById('seq-n').value;
+            const resultDiv = document.getElementById('seq-result');
+            resultDiv.innerHTML = 'Загрузка...';
+            try {
+                const response = await fetch('/api/sequence', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ n: parseInt(n) })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    let html = '<strong>Результат:</strong><pre>';
+                    for (let i = 0; i < data.values.length; i++) {
+                        html += `a_${i+1} = ${data.values[i]}\n`;
+                    }
+                    html += '</pre>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Ошибка: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        async function calculate() {
+            const operation = document.getElementById('calc-op').value;
+            const initial = parseFloat(document.getElementById('calc-initial').value);
+            const valuesStr = document.getElementById('calc-values').value;
+            const values = valuesStr.split(',').map(v => parseFloat(v.trim()));
+            const resultDiv = document.getElementById('calc-result');
+            resultDiv.innerHTML = 'Загрузка...';
+            try {
+                const response = await fetch('/api/calc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ operation: operation, initial: initial, values: values })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    let html = '<strong>Результат:</strong><pre>';
+                    for (let i = 0; i < data.results.length; i++) {
+                        html += `${data.results[i].input} -> ${data.results[i].result}\n`;
+                    }
+                    html += '</pre>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Ошибка: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        async function spiral() {
+            const size = parseInt(document.getElementById('spiral-size').value);
+            const resultDiv = document.getElementById('spiral-result');
+            resultDiv.innerHTML = 'Загрузка...';
+            try {
+                const response = await fetch('/api/spiral', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ size: size })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    let html = `<strong>Исходная матрица ${size}x${size}:</strong><pre>`;
+                    for (let i = 0; i < data.matrix.length; i++) {
+                        html += JSON.stringify(data.matrix[i]) + '\n';
+                    }
+                    html += '</pre><strong>Порядок обхода:</strong><pre>';
+                    for (let i = 0; i < data.spiral_order.length; i++) {
+                        const item = data.spiral_order[i];
+                        html += `(${item[0]}, ${item[1]}) -> ${item[2]}\n`;
+                    }
+                    html += '</pre>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Ошибка: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        // Переключение вкладок
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
