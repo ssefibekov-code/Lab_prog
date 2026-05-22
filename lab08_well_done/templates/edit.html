@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование задачи - ToDo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 { margin-bottom: 20px; color: #333; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        .buttons { display: flex; gap: 10px; margin-top: 20px; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .save { background: #667eea; color: white; }
+        .cancel { background: #ddd; color: #333; }
+        a { text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Редактирование задачи</h1>
+        <form action="/edit/{{ task.id }}" method="post">
+            <div class="form-group">
+                <label>Название:</label>
+                <input type="text" name="title" value="{{ task.title }}" required>
+            </div>
+            <div class="form-group">
+                <label>Описание:</label>
+                <textarea name="description">{{ task.description or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Приоритет:</label>
+                <select name="priority">
+                    <option value="high" {% if task.priority == 'high' %}selected{% endif %}>🔴 Высокий</option>
+                    <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>🟡 Средний</option>
+                    <option value="low" {% if task.priority == 'low' %}selected{% endif %}>🟢 Низкий</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button type="submit" class="save">💾 Сохранить</button>
+                <a href="/"><button type="button" class="cancel">❌ Отмена</button></a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
